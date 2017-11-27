@@ -1,2 +1,14 @@
 ---
 dependencies: []
+
+galaxy_info:
+  author: redhat-nfvpe
+  description:  "Setup Docker"
+  company: "Red Hat, Inc."
+  license: "license (Apache v2.0)"
+  min_ansible_version: 2.3
+  platforms:
+    - name: EL
+      versions:
+        - 7
+
