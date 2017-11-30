@@ -3,15 +3,21 @@
   package:
     name: libselinux-python
     state: present
+  when: testing is not defined and not testing
 
 - name: Create Docker repo
   copy:
     src: docker.repo
     dest: /etc/yum.repos.d/docker.repo
 
+- name: Setup Docker name and version to install
+  set_fact:
+    docker_engine_package: >
+      {% if docker_engine_version == 'latest' %}{{ docker_engine_base_name }}{% else %}{{ docker_engine_base_name }}-{{ docker_engine_version }}{% endif %}
+
 - name: Install docker
   package:
-    name: docker-engine
+    name: "{{ docker_engine_package }}"
     state: present
 
 - name: Create docker service systemd overrides
@@ -43,3 +49,4 @@
     name: docker.service
     state: started
     enabled: yes
+  when: testing is not defined and not testing
