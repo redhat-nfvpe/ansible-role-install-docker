@@ -1,0 +1,29 @@
+---
+- name: Bring up docker containers
+  hosts: localhost
+  vars:
+    inventory:
+      - name: install_docker_default
+        image: "chrismeyers/centos7"
+      - name: install_docker_latest
+        image: "chrismeyers/centos7"
+  roles:
+    - { role: provision_docker, provision_docker_privileged: "{{ true }}", provision_docker_inventory: "{{ inventory }}", become: true, become_user: "root" }
+
+- name: Run Docker install test (default values)
+  hosts: install_docker_default
+  roles:
+    - { role: install-docker, testing: true }
+
+  tasks:
+    - command: rpm --query docker-engine --queryformat '%{VERSION}'
+      register: install_docker_version
+
+    - assert:
+        that:
+          - "docker_engine_version in install_docker_version.stdout"
+
+- name: Run Docker install test (latest version)
+  hosts: install_docker_latest
+  roles:
+    - { role: install-docker, testing: true, docker_engine_version: "latest" }
