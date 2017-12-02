@@ -21,9 +21,9 @@
 
     - assert:
         that:
-          - "docker_engine_version in install_docker_version.stdout"
+          - "docker_package_version in install_docker_version.stdout"
 
 - name: Run Docker install test (latest version)
   hosts: install_docker_latest
   roles:
-    - { role: install-docker, testing: true, docker_engine_version: "latest" }
+    - { role: install-docker, testing: true, docker_package_version: "latest" }

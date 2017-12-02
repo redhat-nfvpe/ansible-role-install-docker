@@ -1,0 +1,28 @@
+# {{ ansible_managed }}
+# This is a system-wide configuration file used to
+# keep track of registries for various container backends.
+# It adheres to YAML format and does not support recursive
+# lists of registries.
+
+# The default location for this configuration file is /etc/containers/registries.conf.
+
+# The only valid categories are: 'registries', 'insecure_registies', 
+# and 'block_registries'.
+
+{% if docker_registries is defined %}registries:
+{% for registry in docker_registries %}
+  - {{ registry }}
+{% endfor %}
+{% endif %}
+
+{% if docker_insecure_registries is defined %}insecure_registries:
+{% for insecure_registry in docker_insecure_registries %}
+  - {{ insecure_registry }}
+{% endfor %}
+{% endif %}
+
+{% if docker_block_registries is defined %}block_registries:
+{% for block_registry in docker_block_registries %}
+  - {{ block_registry }}
+{% endfor %}
+{% endif %}
