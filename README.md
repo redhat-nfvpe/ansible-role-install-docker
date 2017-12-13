@@ -5,6 +5,13 @@ latest Docker version, or (optionally) a pinned Docker version.
 Primarily used in
 [kube-centos-ansible](https://github.com/redhat-nfvpe/kube-centos-ansible).
 
+> **WARNING**
+>
+> This role will setup the `ansible_user` in the `docker` group, allowing for
+> Docker to be run as a non-root user. Unfortunately, that effectively makes
+> the non-root user a root user, which could potentially have security
+> implications in your environment.
+
 ## Role Variables
 
 Available variables listed below along with their default values (see
