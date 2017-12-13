@@ -51,7 +51,8 @@
 - name: Add ansible_user to 'docker' group
   user:
     name: "{{ ansible_user }}"
-    group: docker
+    groups: docker
+    append: yes
 
 - name: Restart registries service
   systemd:
