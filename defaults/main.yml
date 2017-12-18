@@ -1,3 +1,6 @@
 ---
 docker_package_version: latest
 docker_package_base_name: docker
+docker_non_root_user: true
+# valid values: os or ce
+docker_repo_type: os

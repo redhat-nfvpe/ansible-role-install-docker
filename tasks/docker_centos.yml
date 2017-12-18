@@ -1,0 +1,46 @@
+---
+- name: Install primary deps (for ansible)
+  package:
+    name: libselinux-python
+    state: present
+  when: testing is not defined and not testing
+
+- name: Setup Docker name and version to install
+  set_fact:
+    docker_package: "{% if docker_package_version == 'latest' %}{{ docker_package_base_name }}{% else %}{{ docker_package_base_name }}-{{ docker_package_version }}{% endif %}"
+
+- name: Install Docker and dependencies
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ docker_package }}"
+    - atomic-registries
+
+- name: Get installed Docker version
+  command: rpm --query {{ docker_package }} --queryformat '%{VERSION}'
+  register: installed_docker_version
+
+# Updates Docker service file to allow for registries. Not necessary once
+# version 1.13.x is available.
+# Ref: http://pkgs.fedoraproject.org/cgit/rpms/docker.git/plain/docker.service.centos?id=957fa278aa5f152da2a588a1a28f650ba7fe807d
+# Ref: https://github.com/projectatomic/docker/issues/285
+- name: Update Docker systemd unit file
+  copy:
+    src: docker.centos.service
+    dest: /usr/lib/systemd/system/docker.service
+  when: >
+    (installed_docker_version.stdout | version_compare('1.13', '<')) and
+    docker_repo_type == 'os'
+  register: docker_service_file
+
+- name: Setup registry data
+  template:
+    src: etc_containers_registries.conf.j2
+    dest: /etc/containers/registries.conf
+  register: registry_data
+
+- name: Reload systemd units
+  systemd:
+    daemon_reload: yes
+  when: docker_service_file.changed
