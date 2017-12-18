@@ -1,0 +1,13 @@
+---
+- name: Restart registries service
+  systemd:
+    name: docker.service
+    state: restarted
+  when: registry_data.changed
+
+- name: Start and enable Docker service
+  systemd:
+    name: docker.service
+    state: started
+    enabled: yes
+  when: testing is not defined and not testing

@@ -1,75 +1,16 @@
 ---
-- name: Install primary deps (for ansible)
-  package:
-    name: libselinux-python
-    state: present
-  when: testing is not defined and not testing
 
-- name: Setup Docker name and version to install
-  set_fact:
-    docker_package: "{% if docker_package_version == 'latest' %}{{ docker_package_base_name }}{% else %}{{ docker_package_base_name }}-{{ docker_package_version }}{% endif %}"
+- name: Include Docker-CE setup
+  import_tasks: docker_ce.yml
+  when: docker_repo_type == 'ce'
 
-- name: Install Docker and dependencies
-  package:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - "{{ docker_package }}"
-    - atomic-registries
+- name: Include CentOS docker
+  import_tasks: docker_centos.yml
 
-- name: Get installed Docker version
-  command: rpm --query {{ docker_package }} --queryformat '%{VERSION}'
-  register: installed_docker_version
+- name: Include User setup
+  import_tasks: user_setup.yml
+  when: docker_non_root_user
 
-# Updates Docker service file to allow for registries. Not necessary once
-# version 1.13.x is available.
-# Ref: http://pkgs.fedoraproject.org/cgit/rpms/docker.git/plain/docker.service.centos?id=957fa278aa5f152da2a588a1a28f650ba7fe807d
-# Ref: https://github.com/projectatomic/docker/issues/285
-- name: Update Docker systemd unit file
-  copy:
-    src: docker.centos.service
-    dest: /usr/lib/systemd/system/docker.service
-  when: installed_docker_version.stdout | version_compare('1.13', '<')
-  register: docker_service_file
-
-- name: Setup registry data
-  template:
-    src: etc_containers_registries.conf.j2
-    dest: /etc/containers/registries.conf
-  register: registry_data
-
-- name: Reload systemd units
-  systemd:
-    daemon_reload: yes
-  when: docker_service_file.changed
-
-- name: Add 'docker' group
-  group:
-    name: docker
-    state: present
-
-- name: Add ansible_user to 'docker' group
-  user:
-    name: "{{ ansible_user }}"
-    groups: docker
-    append: yes
-  register: user_to_docker_group
-
-- name: Restart registries service
-  systemd:
-    name: docker.service
-    state: restarted
-  when: registry_data.changed
-
-- name: Start and enable Docker service
-  systemd:
-    name: docker.service
-    state: started
-    enabled: yes
-  when: testing is not defined and not testing
-
-- name: Reset SSH connection so groups are available
-  shell: sleep 1; pkill -u {{ ansible_user }} sshd
-  async: 3
-  poll: 2
-  when: user_to_docker_group.changed
+- name: Start docker service
+  import_tasks: start_service.yml
+  when: not docker_non_root_user
