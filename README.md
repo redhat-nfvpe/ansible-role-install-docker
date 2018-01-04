@@ -3,7 +3,7 @@
 Install Docker using operating system repository. Allows for installation of
 latest Docker version, or (optionally) a pinned Docker version.
 Primarily used in
-[kube-centos-ansible](https://github.com/redhat-nfvpe/kube-centos-ansible).
+[kube-ansible](https://github.com/redhat-nfvpe/kube-ansible).
 
 > **WARNING**
 >
