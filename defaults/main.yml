@@ -1,5 +1,5 @@
 ---
-docker_package_version: latest
+docker_package_version: 1.12.6-71.git3e8e77d.el7.centos.1
 docker_package_base_name: docker
 docker_non_root_user: true
 # valid values: os or ce
