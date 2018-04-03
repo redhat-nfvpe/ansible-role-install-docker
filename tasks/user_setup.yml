@@ -15,7 +15,18 @@
   import_tasks: start_service.yml
 
 - name: Reset SSH connection so groups are available
-  shell: sleep 1; pkill -u {{ ansible_user }} sshd
-  async: 3
-  poll: 2
+  shell: "ps -ef | grep sshd | grep `whoami` | awk '{print \"kill -9\", $2}' | sh"
+  async: 0
+  poll: 0
   when: user_to_docker_group.changed
+
+- name: Wait for SSH port to close out
+  wait_for:
+    host: "{{ inventory_hostname }}"
+    port: 22
+    state: stopped
+  delegate_to: localhost
+
+- name: Wait for connection to become available
+  wait_for_connection:
+    delay: 10
