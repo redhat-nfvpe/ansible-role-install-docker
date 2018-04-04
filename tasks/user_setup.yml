@@ -16,7 +16,7 @@
 
 - name: Reset SSH connection so groups are available
   shell: "ps -ef | grep sshd | grep `whoami` | awk '{print \"kill -9\", $2}' | sh"
-  async: 0
+  async: 1
   poll: 0
   when: user_to_docker_group.changed
 
