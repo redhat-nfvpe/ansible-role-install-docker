@@ -16,15 +16,13 @@
 
 - name: Install Docker and dependencies
   package:
-    name: "{{ item }}"
+    name: "{{ docker_package }}",atomic-registries
     state: present
-  with_items:
-    - "{{ docker_package }}"
-    - atomic-registries
 
 - name: Get installed Docker version
   command: rpm --query {{ docker_package }} --queryformat '%{VERSION}'
   register: installed_docker_version
+  changed_when: false
 
 # Updates Docker service file to allow for registries. Not necessary once
 # version 1.13.x is available.
