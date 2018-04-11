@@ -16,7 +16,7 @@
 
 - name: Install Docker and dependencies
   package:
-    name: "{{ docker_package }}",atomic-registries
+    name: "{{ docker_package }},atomic-registries"
     state: present
 
 - name: Get installed Docker version
