@@ -16,8 +16,12 @@
 
 - name: Install Docker and dependencies
   package:
-    name: "{{ docker_package }}",atomic-registries
+    name: "{{ packages }}"
     state: present
+  vars:
+    packages:
+      - "{{ docker_package }}"
+      - atomic-registries
 
 - name: Get installed Docker version
   command: rpm --query {{ docker_package }} --queryformat '%{VERSION}'
