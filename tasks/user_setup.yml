@@ -11,11 +11,10 @@
     append: yes
   register: user_to_docker_group
 
+- name: Load 'docker' group into the ansible_user
+  command: newgrp docker
+  when: user_to_docker_group.changed
+
 - name: Start docker service
   import_tasks: start_service.yml
 
-- name: Reset SSH connection so groups are available
-  shell: sleep 1; pkill -u {{ ansible_user }} sshd
-  async: 3
-  poll: 2
-  when: user_to_docker_group.changed
