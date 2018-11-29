@@ -47,7 +47,16 @@
     dest: /etc/containers/registries.conf
   register: registry_data
 
+- name: Set Docker proxy config if needed
+  block:
+    - name: Create Docker service config dir
+      file: path=/etc/systemd/system/docker.service.d state=directory
+
+    - name: Create Docker proxy config
+      template: src=proxy.j2 dest=/etc/systemd/system/docker.service.d/http-proxy.conf owner=root mode=0644
+  when: '"http_proxy" in calc_proxy_env or "https_proxy" in calc_proxy_env'
+
 - name: Reload systemd units
   systemd:
     daemon_reload: yes
-  when: docker_service_file.changed
+  when: 'docker_service_file.changed or "http_proxy" in calc_proxy_env or "https_proxy" in calc_proxy_env'

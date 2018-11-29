@@ -1,5 +1,9 @@
 ---
 
+- name: Detect proxy settings
+  set_fact:
+    calc_proxy_env: "{{ proxy_env|calculate_no_proxy }}"
+
 - name: Include Docker-CE setup
   import_tasks: docker_ce.yml
   when: docker_repo_type == 'ce'
