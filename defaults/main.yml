@@ -4,3 +4,15 @@ docker_package_base_name: docker
 docker_non_root_user: true
 # valid values: os or ce
 docker_repo_type: os
+### if HTTP/HTTPS proxy is used specify proxy settings below
+## if proxies are needed set them in proxy_env dictionary
+# !!!! NOTE ansible does not support https:// for https_proxy, only http://
+# Configure socks proxy if required for git:// protocol
+# If in proxy env, uncomment no_proxy as its used to make exceptions and specify,
+# which domains or IP addresses should be reached directly
+proxy_env: {}
+#proxy_env:
+#  http_proxy: http://proxy.example.com:8080
+#  https_proxy: http://proxy.example.com:8080
+#  socks_proxy: http://proxy.example.com:1080
+#  no_proxy: "localhost"
