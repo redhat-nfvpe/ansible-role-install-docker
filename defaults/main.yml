@@ -4,6 +4,7 @@ docker_package_base_name: docker
 docker_non_root_user: true
 # valid values: os or ce
 docker_repo_type: os
+docker_install_suppress_newgrp: false
 ### if HTTP/HTTPS proxy is used specify proxy settings below
 ## if proxies are needed set them in proxy_env dictionary
 # !!!! NOTE ansible does not support https:// for https_proxy, only http://

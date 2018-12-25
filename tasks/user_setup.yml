@@ -13,7 +13,7 @@
 
 - name: Load 'docker' group into the ansible_user
   command: newgrp docker
-  when: user_to_docker_group.changed
+  when: user_to_docker_group.changed and docker_install_suppress_newgrp|bool
 
 - name: Start docker service
   import_tasks: start_service.yml
