@@ -11,12 +11,8 @@
     append: yes
   register: user_to_docker_group
 
-#- name: Load 'docker' group into the ansible_user
-#  command: newgrp docker
-#  when: user_to_docker_group.changed and docker_install_suppress_newgrp|bool
-
-- name: Reload the ssh connection for group access
-  ssh-reconnect:
+- name: reset ssh connection to allow user changes to affect 'current login user'
+  meta: reset_connection
 
 - name: Start docker service
   import_tasks: start_service.yml
