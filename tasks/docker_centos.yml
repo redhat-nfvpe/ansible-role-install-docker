@@ -41,6 +41,7 @@
   template:
     src: etc_containers_registries.conf.j2
     dest: /etc/containers/registries.conf
+  when: docker_repo_type == 'os'
   register: registry_data
 
 - name: Reload systemd units
