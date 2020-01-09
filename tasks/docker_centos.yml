@@ -37,7 +37,7 @@
     src: docker.centos.service
     dest: /usr/lib/systemd/system/docker.service
   when: >
-    (installed_docker_version.stdout | version_compare('1.13', '<')) and
+    (installed_docker_version.stdout is version('1.13', '<')) and
     docker_repo_type == 'os'
   register: docker_service_file
 
