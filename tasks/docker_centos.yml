@@ -12,7 +12,11 @@
 
 - name: Setup Docker name and version to install
   set_fact:
-    docker_package: "{% if docker_package_version == 'latest' %}{{ docker_package_base_name }}{% else %}{{ docker_package_base_name }}-{{ docker_package_version }}{% endif %}"
+    docker_package: "\
+                     {% if docker_package_version == 'latest' %}\
+                     {{ docker_package_base_name }}\
+                     {% else %}{{ docker_package_base_name }}-{{ docker_package_version }}\
+                     {% endif %}"
 
 - name: Install Docker and dependencies
   package:
