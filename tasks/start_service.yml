@@ -1,5 +1,5 @@
 ---
-- name: Restart registries service
+- name: Restart registries service # noqa no-handler
   systemd:
     name: docker.service
     state: restarted

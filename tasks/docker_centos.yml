@@ -23,7 +23,7 @@
       - "{{ docker_package }}"
       - atomic-registries
 
-- name: Get installed Docker version
+- name: Get installed Docker version # noqa command-instead-of-module
   command: rpm --query {{ docker_package }} --queryformat '%{VERSION}'
   register: installed_docker_version
   changed_when: false
@@ -57,7 +57,7 @@
       template: src=proxy.j2 dest=/etc/systemd/system/docker.service.d/http-proxy.conf owner=root mode=0644
   when: '"http_proxy" in calc_proxy_env or "https_proxy" in calc_proxy_env'
 
-- name: Reload systemd units
+- name: Reload systemd units # noqa no-handler
   systemd:
     daemon_reload: yes
   when: 'docker_service_file.changed or "http_proxy" in calc_proxy_env or "https_proxy" in calc_proxy_env'
